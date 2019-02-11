@@ -1,2 +1,3 @@
 # dht-sneak
-sneaking in the DHT toolset
+
+Toolbox for sneaking in the DHT :male_detective: 
