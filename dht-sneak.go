@@ -16,14 +16,14 @@ import (
 
 func main() {
 	logFile := fmt.Sprintf("./%v.log", time.Now().Format(time.RFC3339))
-	_ = configLogging(logFile)
+	logger := configLogging(logFile)
 
 	listenAddrs := configListenAddrs()
 	ctx := context.Background()
 	host, err := libp2p.New(ctx, libp2p.ListenAddrs(listenAddrs...))
 	errFatal(err)
 
-	log.Printf("> node init: %v | %v\n", host.ID(), host.Addrs())
+	logger.Debugf("> node init: %s | %v\n", host.ID().Pretty(), host.Addrs())
 
 	dht, err := kad.New(ctx, host)
 	errFatal(err)
@@ -40,14 +40,14 @@ func main() {
 			if err := host.Connect(ctx, *peerinfo); err != nil {
 				// log.Println(err)
 			} else {
-				log.Printf("> dht: connection established with bootstrap node %v [%v]",
-					peerinfo.ID, peerinfo.Addrs)
+				logger.Debugf("> OK bootstrap node %v [%v]",
+					peerinfo.ID.Pretty(), peerinfo.Addrs)
 			}
 		}()
 	}
 	wg.Wait()
 
-	log.Printf("\n\n> dht-sneak node running and logging to %v. Press CTRL+C to exit.\n", logFile)
+	log.Printf("\n> dht-sneak node running and logging to %v  (Press CTRL+C to exit.)\n\n", logFile)
 	select {}
 
 }
