@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
+	//kad "dhtsneak/go-libp2p-kad-dht"
 	"fmt"
-	kad "github.com/gpestana/go-libp2p-kad-dht"
 	logging "github.com/ipfs/go-log"
 	"github.com/libp2p/go-libp2p"
+	kad "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
 	golog "github.com/whyrusleeping/go-logging"
@@ -38,7 +39,7 @@ func main() {
 		go func() {
 			defer wg.Done()
 			if err := host.Connect(ctx, *peerinfo); err != nil {
-				// log.Println(err)
+				//log.Println(err)
 			} else {
 				logger.Debugf("> OK bootstrap node %v [%v]",
 					peerinfo.ID.Pretty(), peerinfo.Addrs)
@@ -54,7 +55,7 @@ func main() {
 
 func configLogging(logFile string) logging.EventLogger {
 	logEvent := logging.Logger("dht-sneak")
-	golog.SetLevel(golog.INFO, "dht-sneak")
+	golog.SetLevel(golog.DEBUG, "dht-sneak")
 	return logEvent
 }
 
