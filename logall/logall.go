@@ -4,16 +4,25 @@ import (
 	"context"
 	//kad "dhtsneak/go-libp2p-kad-dht"
 	"fmt"
+	ipfsaddr "github.com/ipfs/go-ipfs-addr"
 	logging "github.com/ipfs/go-log"
 	"github.com/libp2p/go-libp2p"
 	kad "github.com/libp2p/go-libp2p-kad-dht"
-	"github.com/libp2p/go-libp2p-peerstore"
+	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
 	golog "github.com/whyrusleeping/go-logging"
 	"log"
-	"sync"
+	//"sync"
 	"time"
 )
+
+var bootstrapPeers = []string{
+	"/ip4/104.131.131.82/tcp/4001/ipfs/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+	"/ip4/104.236.179.241/tcp/4001/ipfs/QmSoLPppuBtQSGwKDZT2M73ULpjvfd3aZ6ha4oFGL1KrGM",
+	"/ip4/104.236.76.40/tcp/4001/ipfs/QmSoLV4Bbm51jM9C4gDYZQ9Cy3U6aXMJDAbzgu2fzaDs64",
+	"/ip4/128.199.219.111/tcp/4001/ipfs/QmSoLSafTMBsPKadTEgaXctDQVcqN88CNLHXMkTNwMKPnu",
+	"/ip4/178.62.158.247/tcp/4001/ipfs/QmSoLer265NRgSp2LA3dPaeykiS1J6DifTC88f5uVQKNAd",
+}
 
 func main() {
 	logFile := fmt.Sprintf("./%v.log", time.Now().Format(time.RFC3339))
@@ -21,6 +30,7 @@ func main() {
 
 	listenAddrs := configListenAddrs()
 	ctx := context.Background()
+	//host, err := libp2p.New(ctx)
 	host, err := libp2p.New(ctx, libp2p.ListenAddrs(listenAddrs...))
 	errFatal(err)
 
@@ -32,23 +42,21 @@ func main() {
 	err = dht.Bootstrap(ctx)
 	errFatal(err)
 
-	var wg sync.WaitGroup
-	for _, peerAddr := range configBootstrapPeers() {
-		peerinfo, _ := peerstore.InfoFromP2pAddr(peerAddr)
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			if err := host.Connect(ctx, *peerinfo); err != nil {
-				//log.Println(err)
-			} else {
-				logger.Debugf("> OK bootstrap node %v [%v]",
-					peerinfo.ID.Pretty(), peerinfo.Addrs)
-			}
-		}()
+	for _, peerAddr := range bootstrapPeers {
+		pAddr, _ := ipfsaddr.ParseString(peerAddr)
+		peerinfo, _ := pstore.InfoFromP2pAddr(pAddr.Multiaddr())
+
+		if err = host.Connect(ctx, *peerinfo); err != nil {
+			log.Println("ERROR: ", err)
+		} else {
+			log.Println("connected to bootstrapPeer")
+		}
 	}
-	wg.Wait()
 
 	log.Printf("\n> dht-sneak node running and logging to %v  (Press CTRL+C to exit.)\n\n", logFile)
+
+	log.Println(dht)
+
 	select {}
 
 }
