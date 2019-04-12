@@ -10,18 +10,20 @@ type Tracker interface {
 }
 
 type config struct {
-	output   string
-	interval int
+	output       string
+	interval     int
+	queryTimeout int
 }
 
 func main() {
 	//tracks IPFS content providers and saves results to output
 	// #TODO refactor for CLI
-	contentId := "Qmb1r3Cf1PcU1H3QVhARBa9V4frExfRmAqp1ZVnLXiy24m"
+	contentId := "QmdPtC3T7Kcu9iJg6hYzLBWR5XCDcYMY7HV685E3kH3EcS"
 
 	confs := config{
-		output:   fmt.Sprintf("provs-%v.out\n", contentId),
-		interval: 10,
+		output:       fmt.Sprintf("provs-%v.out", contentId),
+		interval:     10,
+		queryTimeout: 180,
 	}
 
 	ctx := context.Background()

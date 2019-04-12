@@ -9,4 +9,5 @@ require (
 	github.com/libp2p/go-libp2p-kad-dht v0.0.7
 	github.com/libp2p/go-libp2p-peerstore v0.0.1
 	github.com/multiformats/go-multiaddr v0.0.1
+	github.com/multiformats/go-multihash v0.0.1
 )
