@@ -17,8 +17,8 @@ type config struct {
 
 func main() {
 	//tracks IPFS content providers and saves results to output
-	// #TODO refactor for CLI
-	contentId := "QmdPtC3T7Kcu9iJg6hYzLBWR5XCDcYMY7HV685E3kH3EcS"
+	// #TODO refactor as CLI
+	contentId := "QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv"
 
 	confs := config{
 		output:       fmt.Sprintf("provs-%v.out", contentId),
