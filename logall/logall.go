@@ -31,6 +31,12 @@ func main() {
 	listenAddrs := configListenAddrs()
 	ctx := context.Background()
 	//host, err := libp2p.New(ctx)
+
+	go func() {
+		time.Sleep(time.Second * 5)
+		fmt.Println(ctx)
+	}()
+
 	host, err := libp2p.New(ctx, libp2p.ListenAddrs(listenAddrs...))
 	errFatal(err)
 
